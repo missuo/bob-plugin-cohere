@@ -17,4 +17,4 @@ This is a Cohere AI translation plugin designed for Bob.
 [https://dashboard.cohere.com/api-keys](https://dashboard.cohere.com/api-keys)
 
 ## Author
-**bob-plugin-cohere** © [Vincent Young](https://github.com/missuo), Released under the [MIT](./LICENSE) License.<br>
+**bob-plugin-cohere** © [Vincent Young](https://github.com/missuo), Released under the [GPL 3.0](./LICENSE) License.<br>
