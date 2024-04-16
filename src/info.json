@@ -1,7 +1,7 @@
 {
   "identifier": "me.missuo.cohere.translate",
   "category": "translate",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "name": "Cohere",
   "summary": "Powered by OwO Network Limited",
   "author": "missuo",
@@ -33,7 +33,7 @@
       "identifier": "model",
       "type": "menu",
       "title": "模型",
-      "defaultValue": "command-r",
+      "defaultValue": "command-r-plus",
       "menuValues": [
         {
           "title": "Command R",
