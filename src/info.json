@@ -30,6 +30,38 @@
       }
     },
     {
+      "identifier": "model",
+      "type": "menu",
+      "title": "模型",
+      "defaultValue": "command-r",
+      "menuValues": [
+        {
+          "title": "Command R",
+          "value": "command-r"
+        },
+        {
+          "title": "Command R+",
+          "value": "command-r-plus"
+        },
+        {
+          "title": "Command Light",
+          "value": "command-light"
+        },
+        {
+          "title": "Command Light Nightly",
+          "value": "command-light-nightly"
+        },
+        {
+          "title": "Command",
+          "value": "command"
+        },
+        {
+          "title": "Command Nightly",
+          "value": "command-nightly"
+        }
+      ]
+    },
+    {
       "identifier": "mode",
       "type": "menu",
       "title": "模式",

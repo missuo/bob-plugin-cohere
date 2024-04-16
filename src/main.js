@@ -49,9 +49,10 @@ function generatePrompts(mode, customizePrompt, query) {
   return userPrompt;
 }
 
-function buildRequestBody(mode, customizePrompt, query) {
+function buildRequestBody(model, mode, customizePrompt, query) {
   const prompt = generatePrompts(mode, customizePrompt, query);
   return {
+    model: model,
     chat_history: [{ role: "USER", message: prompt }],
     message: query.text,
     stream: true,
@@ -111,6 +112,7 @@ function translate(query) {
   }
 
   const {
+    model,
     mode,
     customizePrompt,
     apiUrl,
@@ -119,7 +121,7 @@ function translate(query) {
   const apiUrlPath = "/v1/chat";
 
   const header = buildHeader(apiKey);
-  const body = buildRequestBody(mode, customizePrompt, query);
+  const body = buildRequestBody(model, mode, customizePrompt, query);
 
   let targetText = ""; // 初始化拼接结果变量
   (async () => {
