@@ -1,0 +1,1 @@
+# bob-plugin-cohere
