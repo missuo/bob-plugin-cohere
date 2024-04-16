@@ -1,0 +1,70 @@
+{
+  "identifier": "me.missuo.cohere.translate",
+  "category": "translate",
+  "version": "1.0.0",
+  "name": "Cohere",
+  "summary": "Powered by OwO Network Limited",
+  "author": "missuo",
+  "appcast": "https://github.com/missuo/bob-plugin-cohere/raw/main/appcast.json",
+  "homepage": "https://github.com/missuo/bob-plugin-cohere",
+  "icon": "icon.png",
+  "minBobVersion": "1.8.0",
+  "options": [
+    {
+      "identifier": "apiUrl",
+      "type": "text",
+      "title": "API URL",
+      "defaultValue": "https://api.cohere.ai",
+      "desc": "以上是官方 API，如果你使用代理 API 请修改。",
+      "textConfig": {
+        "type": "visible"
+      }
+    },
+    {
+      "identifier": "apiKey",
+      "type": "text",
+      "title": "API Key",
+      "desc": "请输入 Cohere 申请的 API Key",
+      "textConfig": {
+        "type": "secure"
+      }
+    },
+    {
+      "identifier": "mode",
+      "type": "menu",
+      "title": "模式",
+      "defaultValue": "1",
+      "desc": "请选择工作的模式",
+      "menuValues": [
+        {
+          "title": "翻译",
+          "value": "1"
+        },
+        {
+          "title": "润色",
+          "value": "2"
+        },
+        {
+          "title": "提问",
+          "value": "3"
+        },
+        {
+          "title": "自定义",
+          "value": "4"
+        }
+      ]
+    },
+    {
+      "identifier": "customizePrompt",
+      "type": "text",
+      "title": "自定义 Prompt",
+      "defaultValue": "",
+      "desc": "只有模式选择自定义才会生效",
+      "textConfig": {
+        "type": "visible",
+        "height": "80",
+        "placeholderText": "根据内容直译，不要遗漏任何信息"
+      }
+    }
+  ]
+}
