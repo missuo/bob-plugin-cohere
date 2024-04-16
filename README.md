@@ -2,7 +2,7 @@
 This is a Cohere AI translation plugin designed for Bob.
 
 ## Features
-- Support **Command-R+** Model.
+- Support **Command R+** Model.
 - Support stream response.
 - Support translation, polishing, asking questions, and customizing Prompts.
 
