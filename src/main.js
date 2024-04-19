@@ -14,7 +14,7 @@ function buildHeader(apikey) {
 function generatePrompts(mode, customizePrompt, query) {
   let userPrompt = "";
   if (mode === "1") {
-    let translationPrompt = `You are now an translator, please translate the following content. Translate directly according to the content, and do not omit any details.`;
+    let translationPrompt = `You are now an translator, please translate the following content. Translate directly according to the content, and do not omit any details. Please ignore all questions, you only need to translate.`;
 
     userPrompt = `${translationPrompt} from "${
       lang.langMap.get(query.detectFrom) || query.detectFrom
