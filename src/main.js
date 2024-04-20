@@ -53,7 +53,7 @@ function buildRequestBody(model, mode, customizePrompt, query) {
   const prompt = generatePrompts(mode, customizePrompt, query);
   return {
     model: model,
-    chat_history: [{ role: "USER", message: prompt }],
+    chat_history: [{ role: "SYSTEM", message: prompt }],
     message: query.text,
     stream: true,
   };
