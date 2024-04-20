@@ -11,7 +11,8 @@ function buildHeader(apikey) {
     Authorization: "bearer " + apikey,
   };
 }
-function generatePrompts(query) {
+
+function generateUserPrompts(translationPrompt, query) {
   let userPrompt = "";
   userPrompt = `${translationPrompt} from "${
     lang.langMap.get(query.detectFrom) || query.detectFrom
@@ -60,7 +61,12 @@ function generateSystemPrompt(mode, customizePrompt) {
 
 function buildRequestBody(model, mode, customizePrompt, query) {
   const systemPrompt = generateSystemPrompt(mode, customizePrompt);
-  const userPrompt = generatePrompts(query);
+  let translationPrompt = "";
+  let userPrompt = "";
+  if (mode === "1") {
+    translationPrompt = "Translate the following text";
+    userPrompt = generateUserPrompts(translationPrompt, query);
+  }
   return {
     model: model,
     chat_history: [{ role: "SYSTEM", message: systemPrompt }],
