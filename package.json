@@ -1,6 +1,6 @@
 {
   "name": "bob-plugin-cohere",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Bob plugin for Cohere translation",
   "scripts": {
     "build": "npx tsx scripts/build.ts",

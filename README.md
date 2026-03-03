@@ -23,7 +23,7 @@ cp .env.example .env   # then fill in your COHERE_API_KEY
 
 npm run build           # compile TS → build/
 npm run fetch-models    # pull latest models into src/info.json
-bash release.sh v1.0.9  # build + package .bobplugin
+bash release.sh v1.0.10  # build + package .bobplugin
 ```
 
 ## License

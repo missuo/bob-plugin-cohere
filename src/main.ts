@@ -110,6 +110,40 @@ function buildRequestBody(
   };
 }
 
+function normalizeOutput(mode: string, text: string): string {
+  if (mode !== Mode.Translate) return text;
+
+  const normalized = text.replace(/\r\n/g, "\n");
+  const lines = normalized.split("\n");
+
+  let first = 0;
+  while (first < lines.length && lines[first].trim() === "") {
+    first++;
+  }
+
+  let last = lines.length - 1;
+  while (last >= first && lines[last].trim() === "") {
+    last--;
+  }
+
+  if (first <= last && lines[first].trim() === "---") {
+    first++;
+    while (first <= last && lines[first].trim() === "") {
+      first++;
+    }
+  }
+
+  if (first <= last && lines[last].trim() === "---") {
+    last--;
+    while (last >= first && lines[last].trim() === "") {
+      last--;
+    }
+  }
+
+  if (first > last) return "";
+  return lines.slice(first, last + 1).join("\n");
+}
+
 function handleGeneralError(query: BobQuery, error: any): void {
   if ("response" in error) {
     const { statusCode } = error.response;
@@ -173,11 +207,12 @@ function translate(query: BobQuery): void {
     if (!delta) return;
 
     targetText += delta;
+    const displayText = normalizeOutput(mode, targetText);
     query.onStream({
       result: {
         from: query.detectFrom,
         to: query.detectTo,
-        toParagraphs: [targetText],
+        toParagraphs: [displayText],
       },
     });
   };
@@ -265,11 +300,12 @@ function translate(query: BobQuery): void {
           handleGeneralError(query, result);
         } else {
           parseStreamChunk("", true);
+          const finalText = normalizeOutput(mode, targetText);
           query.onCompletion({
             result: {
               from: query.detectFrom,
               to: query.detectTo,
-              toParagraphs: [targetText],
+              toParagraphs: [finalText],
             },
           });
         }
