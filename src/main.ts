@@ -16,7 +16,7 @@ function supportLanguages(): string[] {
 
 function buildHeader(apiKey: string): Record<string, string> {
   return {
-    Accept: "application/json",
+    Accept: "text/event-stream",
     "Content-Type": "application/json",
     Authorization: "Bearer " + apiKey,
   };
@@ -165,7 +165,84 @@ function translate(query: BobQuery): void {
   const body = buildRequestBody(model, mode, customizePrompt, query);
 
   let targetText = "";
-  let sseBuffer = "";
+  let streamBuffer = "";
+  let streamFormat: "sse" | "jsonl" | "" = "";
+
+  const emitDelta = (event: any): void => {
+    const delta = event?.delta?.message?.content?.text;
+    if (!delta) return;
+
+    targetText += delta;
+    query.onStream({
+      result: {
+        from: query.detectFrom,
+        to: query.detectTo,
+        toParagraphs: [targetText],
+      },
+    });
+  };
+
+  const parseJsonEvent = (jsonStr: string): void => {
+    if (!jsonStr || jsonStr === "[DONE]") return;
+    try {
+      const event = JSON.parse(jsonStr);
+      emitDelta(event);
+    } catch {
+      // ignore invalid chunks
+    }
+  };
+
+  const parseSSEBuffer = (flush = false): void => {
+    const blocks = streamBuffer.split(/\r?\n\r?\n/);
+    if (!flush) {
+      streamBuffer = blocks.pop() || "";
+    } else {
+      streamBuffer = "";
+    }
+
+    for (const block of blocks) {
+      for (const line of block.split(/\r?\n/)) {
+        if (!line.startsWith("data:")) continue;
+        parseJsonEvent(line.slice(5).trim());
+      }
+    }
+  };
+
+  const parseJsonlBuffer = (flush = false): void => {
+    const lines = streamBuffer.split(/\r?\n/);
+    if (!flush) {
+      streamBuffer = lines.pop() || "";
+    } else {
+      streamBuffer = "";
+    }
+
+    for (const line of lines) {
+      parseJsonEvent(line.trim());
+    }
+  };
+
+  const parseStreamChunk = (chunk: string, flush = false): void => {
+    streamBuffer += chunk;
+
+    if (!streamFormat) {
+      if (streamBuffer.includes("data:") || streamBuffer.includes("event:")) {
+        streamFormat = "sse";
+      } else if (streamBuffer.trimStart().startsWith("{")) {
+        streamFormat = "jsonl";
+      } else if (!flush) {
+        return;
+      } else {
+        streamFormat = "jsonl";
+      }
+    }
+
+    if (streamFormat === "sse") {
+      parseSSEBuffer(flush);
+    } else {
+      parseJsonlBuffer(flush);
+    }
+  };
+
   (async () => {
     await $http.streamRequest({
       method: "POST",
@@ -175,37 +252,7 @@ function translate(query: BobQuery): void {
       cancelSignal: query.cancelSignal,
       streamHandler: (streamData) => {
         if (streamData.text === undefined) return;
-
-        // Bob may deliver partial chunks; buffer and split by double newline (SSE boundary)
-        sseBuffer += streamData.text;
-        const blocks = sseBuffer.split("\n\n");
-        // Last element may be incomplete, keep it in buffer
-        sseBuffer = blocks.pop() || "";
-
-        for (const block of blocks) {
-          for (const line of block.split("\n")) {
-            if (!line.startsWith("data: ")) continue;
-            const jsonStr = line.slice(6).trim();
-            if (!jsonStr || jsonStr === "[DONE]") continue;
-
-            try {
-              const event = JSON.parse(jsonStr);
-              const delta = event?.delta?.message?.content?.text;
-              if (delta) {
-                targetText += delta;
-                query.onStream({
-                  result: {
-                    from: query.detectFrom,
-                    to: query.detectTo,
-                    toParagraphs: [targetText],
-                  },
-                });
-              }
-            } catch {
-              // skip non-JSON lines
-            }
-          }
-        }
+        parseStreamChunk(streamData.text, false);
       },
       handler: (result) => {
         if (result.response.statusCode === 401) {
@@ -217,6 +264,7 @@ function translate(query: BobQuery): void {
         } else if (result.response.statusCode >= 400) {
           handleGeneralError(query, result);
         } else {
+          parseStreamChunk("", true);
           query.onCompletion({
             result: {
               from: query.detectFrom,
