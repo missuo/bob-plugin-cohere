@@ -127,6 +127,35 @@
       ]
     },
     {
+      "identifier": "translationStyle",
+      "type": "menu",
+      "title": "翻译风格",
+      "defaultValue": "default",
+      "desc": "仅在“翻译”模式下生效",
+      "menuValues": [
+        {
+          "title": "默认",
+          "value": "default"
+        },
+        {
+          "title": "正式",
+          "value": "formal"
+        },
+        {
+          "title": "口语化",
+          "value": "casual"
+        },
+        {
+          "title": "直译",
+          "value": "literal"
+        },
+        {
+          "title": "地道表达",
+          "value": "natural"
+        }
+      ]
+    },
+    {
       "identifier": "customizePrompt",
       "type": "text",
       "title": "自定义 Prompt",
