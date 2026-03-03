@@ -1,7 +1,7 @@
 {
   "identifier": "me.missuo.cohere.translate",
   "category": "translate",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "name": "Cohere",
   "summary": "Powered by OwO Network Limited",
   "author": "missuo",
@@ -33,51 +33,71 @@
       "identifier": "model",
       "type": "menu",
       "title": "模型",
-      "defaultValue": "command-r-plus",
+      "defaultValue": "command-r-plus-08-2024",
       "menuValues": [
         {
-          "title": "Command R7B 2024-12",
-          "value": "command-r7b-12-2024"
+          "title": "Command A Vision 07 2025",
+          "value": "command-a-vision-07-2025"
         },
         {
-          "title": "Command R+ 2024-08",
-          "value": "command-r-plus-08-2024"
+          "title": "C4AI Aya Vision 8B",
+          "value": "c4ai-aya-vision-8b"
         },
         {
-          "title": "Command R+ 2024-04",
-          "value": "command-r-plus-04-2024"
+          "title": "Tiny Aya Fire",
+          "value": "tiny-aya-fire"
         },
         {
-          "title": "Command R+",
-          "value": "command-r-plus"
+          "title": "Command A Reasoning 08 2025",
+          "value": "command-a-reasoning-08-2025"
         },
         {
-          "title": "Command R 2024-08",
+          "title": "C4AI Aya Expanse 8B",
+          "value": "c4ai-aya-expanse-8b"
+        },
+        {
+          "title": "Command R 08 2024",
           "value": "command-r-08-2024"
         },
         {
-          "title": "Command R 2024-03",
-          "value": "command-r-03-2024"
+          "title": "Tiny Aya Water",
+          "value": "tiny-aya-water"
         },
         {
-          "title": "Command R",
-          "value": "command-r"
+          "title": "Command R7B Arabic 02 2025",
+          "value": "command-r7b-arabic-02-2025"
         },
         {
-          "title": "Command Light",
-          "value": "command-light"
+          "title": "C4AI Aya Expanse 32B",
+          "value": "c4ai-aya-expanse-32b"
         },
         {
-          "title": "Command Light Nightly",
-          "value": "command-light-nightly"
+          "title": "Command R7B 12 2024",
+          "value": "command-r7b-12-2024"
         },
         {
-          "title": "Command",
-          "value": "command"
+          "title": "C4AI Aya Vision 32B",
+          "value": "c4ai-aya-vision-32b"
         },
         {
-          "title": "Command Nightly",
-          "value": "command-nightly"
+          "title": "Tiny Aya Earth",
+          "value": "tiny-aya-earth"
+        },
+        {
+          "title": "Command A Translate 08 2025",
+          "value": "command-a-translate-08-2025"
+        },
+        {
+          "title": "Tiny Aya Global",
+          "value": "tiny-aya-global"
+        },
+        {
+          "title": "Command A 03 2025",
+          "value": "command-a-03-2025"
+        },
+        {
+          "title": "Command R Plus 08 2024",
+          "value": "command-r-plus-08-2024"
         }
       ]
     },

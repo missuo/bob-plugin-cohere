@@ -1,17 +1,11 @@
 #!/bin/bash
-###
- # @Author: Vincent Young
- # @Date: 2024-04-16 15:35:13
- # @LastEditors: Vincent Young
- # @LastEditTime: 2024-04-16 17:50:16
- # @FilePath: /bob-plugin-cohere/release.sh
- # @Telegram: https://t.me/missuo
- # @GitHub: https://github.com/missuo
- # 
- # Copyright © 2024 by Vincent, All Rights Reserved. 
-### 
 version=${1#refs/tags/v}
-zip -r -j bob-plugin-cohere-$version.bobplugin src/*
+
+# Build first
+npm run build
+
+# Package from build directory
+zip -r -j bob-plugin-cohere-$version.bobplugin build/*
 
 sha256_cohere=$(sha256sum bob-plugin-cohere-$version.bobplugin | cut -d ' ' -f 1)
 echo $sha256_cohere
@@ -26,5 +20,5 @@ json_data=$(cat $json_file)
 updated_json=$(echo $json_data | jq --argjson new_version "$new_version" '.versions = [$new_version] + .versions')
 
 echo $updated_json > $json_file
-mkdir dist
+mkdir -p dist
 mv *.bobplugin dist

@@ -1,25 +1,31 @@
 # bob-plugin-cohere
-This is a Cohere AI translation plugin designed for Bob.
+
+A [Bob](https://bobtranslate.com/) translation plugin powered by [Cohere](https://cohere.com/) AI.
 
 ## Features
-- Support all models from Cohere.
-- Support stream response.
-- Support translation, polishing, asking questions, and customizing Prompts.
 
-## Guide
-### Install Bob
-[![Download on the Mac App Store](https://cdn.ripperhe.com/oss/master/2022/0626/Download_on_the_Mac_App_Store_Badge_US-UK_RGB_blk_092917.svg)](https://apps.apple.com/cn/app/id1630034110#?platform=mac)
+- All Cohere chat models supported, with auto-fetch script to keep the list up to date
+- Streaming response for real-time translation output
+- Four modes: Translation, Polishing, Q&A, and Custom Prompt
 
-### Download Plugin
-[Click here](https://github.com/missuo/bob-plugin-cohere/releases)
+## Installation
 
-### Apply API Key
-[https://dashboard.cohere.com/api-keys](https://dashboard.cohere.com/api-keys)
+1. Install [Bob](https://apps.apple.com/cn/app/id1630034110#?platform=mac) (macOS)
+2. Download the latest `.bobplugin` from [Releases](https://github.com/missuo/bob-plugin-cohere/releases)
+3. Double-click to install
+4. Get a free API Key from [Cohere Dashboard](https://dashboard.cohere.com/api-keys) and paste it in the plugin settings
 
-**You can use this free trial Key without any payment.**
+## Development
 
-<img width="1622" alt="image" src="https://github.com/missuo/bob-plugin-cohere/assets/55200481/a64e2cc5-b497-43e1-9149-2a4e87b3d4e8">
+```bash
+npm install
+cp .env.example .env   # then fill in your COHERE_API_KEY
 
+npm run build           # compile TS → build/
+npm run fetch-models    # pull latest models into src/info.json
+bash release.sh v1.0.9  # build + package .bobplugin
+```
 
-## Author
-**bob-plugin-cohere** © [Vincent Young](https://github.com/missuo), Released under the [GPL 3.0](./LICENSE) License.<br>
+## License
+
+GPL-3.0 © [Vincent Young](https://github.com/missuo)

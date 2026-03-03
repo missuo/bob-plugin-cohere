@@ -1,0 +1,17 @@
+{
+  "name": "bob-plugin-cohere",
+  "version": "1.0.9",
+  "description": "Bob plugin for Cohere translation",
+  "scripts": {
+    "build": "tsx scripts/build.ts",
+    "release": "tsx scripts/build.ts && bash release.sh",
+    "fetch-models": "tsx scripts/fetch-models.ts"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "esbuild": "^0.24.0",
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "dotenv": "^16.4.0"
+  }
+}
