@@ -1,7 +1,7 @@
 var lang = require("./lang.js");
 
-const DEFAULT_API_URL = "https://api.cohere.ai";
-const API_PATH = "/v1/chat";
+const DEFAULT_API_URL = "https://api.cohere.com";
+const API_PATH = "/v2/chat";
 
 const Mode = {
   Translate: "1",
@@ -16,9 +16,9 @@ function supportLanguages(): string[] {
 
 function buildHeader(apiKey: string): Record<string, string> {
   return {
-    accept: "application/json",
-    "content-type": "application/json",
-    Authorization: "bearer " + apiKey,
+    Accept: "application/json",
+    "Content-Type": "application/json",
+    Authorization: "Bearer " + apiKey,
   };
 }
 
@@ -93,13 +93,19 @@ function buildRequestBody(
   query: BobQuery
 ) {
   const systemPrompt = generateSystemPrompt(mode, customizePrompt);
-  const message =
+  const userMessage =
     mode === Mode.Translate ? generateUserPrompt(query) : query.text;
+
+  const messages: { role: string; content: string }[] = [];
+
+  if (systemPrompt) {
+    messages.push({ role: "system", content: systemPrompt });
+  }
+  messages.push({ role: "user", content: userMessage });
 
   return {
     model,
-    chat_history: [{ role: "SYSTEM", message: systemPrompt }],
-    message,
+    messages,
     stream: true,
   };
 }
@@ -123,24 +129,6 @@ function handleGeneralError(query: BobQuery, error: any): void {
       },
     });
   }
-}
-
-function handleStreamResponse(
-  query: BobQuery,
-  targetText: string,
-  streamData: { is_finished: boolean; text?: string }
-): string {
-  if (!streamData.is_finished && streamData.text) {
-    targetText += streamData.text;
-    query.onStream({
-      result: {
-        from: query.detectFrom,
-        to: query.detectTo,
-        toParagraphs: [targetText],
-      },
-    });
-  }
-  return targetText;
 }
 
 function translate(query: BobQuery): void {
@@ -185,9 +173,33 @@ function translate(query: BobQuery): void {
       body,
       cancelSignal: query.cancelSignal,
       streamHandler: (streamData) => {
-        if (streamData.text !== undefined) {
-          const dataObj = JSON.parse(streamData.text);
-          targetText = handleStreamResponse(query, targetText, dataObj);
+        if (streamData.text === undefined) return;
+
+        // SSE format: "event: xxx\ndata: {...}\n\n"
+        // Bob's streamHandler may deliver partial or multiple lines
+        const lines = streamData.text.split("\n");
+        for (const line of lines) {
+          if (!line.startsWith("data: ")) continue;
+          const jsonStr = line.slice(6);
+          if (!jsonStr) continue;
+
+          try {
+            const event = JSON.parse(jsonStr);
+            // content-delta: event.type === "content-delta"
+            const delta = event?.delta?.message?.content?.text;
+            if (delta) {
+              targetText += delta;
+              query.onStream({
+                result: {
+                  from: query.detectFrom,
+                  to: query.detectTo,
+                  toParagraphs: [targetText],
+                },
+              });
+            }
+          } catch {
+            // skip non-JSON lines
+          }
         }
       },
       handler: (result) => {

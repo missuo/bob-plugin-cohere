@@ -14,7 +14,7 @@
       "identifier": "apiUrl",
       "type": "text",
       "title": "API URL",
-      "defaultValue": "https://api.cohere.ai",
+      "defaultValue": "https://api.cohere.com",
       "desc": "以上是官方 API，如果你使用代理 API 请修改。",
       "textConfig": {
         "type": "visible"
