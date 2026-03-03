@@ -165,6 +165,7 @@ function translate(query: BobQuery): void {
   const body = buildRequestBody(model, mode, customizePrompt, query);
 
   let targetText = "";
+  let sseBuffer = "";
   (async () => {
     await $http.streamRequest({
       method: "POST",
@@ -175,30 +176,34 @@ function translate(query: BobQuery): void {
       streamHandler: (streamData) => {
         if (streamData.text === undefined) return;
 
-        // SSE format: "event: xxx\ndata: {...}\n\n"
-        // Bob's streamHandler may deliver partial or multiple lines
-        const lines = streamData.text.split("\n");
-        for (const line of lines) {
-          if (!line.startsWith("data: ")) continue;
-          const jsonStr = line.slice(6);
-          if (!jsonStr) continue;
+        // Bob may deliver partial chunks; buffer and split by double newline (SSE boundary)
+        sseBuffer += streamData.text;
+        const blocks = sseBuffer.split("\n\n");
+        // Last element may be incomplete, keep it in buffer
+        sseBuffer = blocks.pop() || "";
 
-          try {
-            const event = JSON.parse(jsonStr);
-            // content-delta: event.type === "content-delta"
-            const delta = event?.delta?.message?.content?.text;
-            if (delta) {
-              targetText += delta;
-              query.onStream({
-                result: {
-                  from: query.detectFrom,
-                  to: query.detectTo,
-                  toParagraphs: [targetText],
-                },
-              });
+        for (const block of blocks) {
+          for (const line of block.split("\n")) {
+            if (!line.startsWith("data: ")) continue;
+            const jsonStr = line.slice(6).trim();
+            if (!jsonStr || jsonStr === "[DONE]") continue;
+
+            try {
+              const event = JSON.parse(jsonStr);
+              const delta = event?.delta?.message?.content?.text;
+              if (delta) {
+                targetText += delta;
+                query.onStream({
+                  result: {
+                    from: query.detectFrom,
+                    to: query.detectTo,
+                    toParagraphs: [targetText],
+                  },
+                });
+              }
+            } catch {
+              // skip non-JSON lines
             }
-          } catch {
-            // skip non-JSON lines
           }
         }
       },
