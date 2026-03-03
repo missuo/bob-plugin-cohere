@@ -1,7 +1,8 @@
 #!/bin/bash
 version=${1#refs/tags/v}
 
-# Build first
+# Install dependencies and build
+npm ci
 npm run build
 
 # Package from build directory
